@@ -12,9 +12,10 @@ ii. 顯示：橫向、1920x1080、320DPI
 iii. 圖形：效能、OpenGL  
 2. 第七史詩  
 i. 只勾高級設定
-3. tesseract  
+3. python3.9.10  
+4. tesseract  
 i. tesseract-ocr-w64 (https://github.com/UB-Mannheim/tesseract/wiki)  
-4. config.json  
+5. config.json  
 i. tesseract_path填tesseract的路徑(記得處理跳脫字元)  
 ii. bluestack_name填模擬器的名稱(視窗名稱)  
   
