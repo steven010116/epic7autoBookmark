@@ -7,7 +7,6 @@
 
 from unittest import case
 from PyQt6 import QtCore, QtGui, QtWidgets
-from numpy import integer
 from PIL import ImageGrab, Image
 from functools import partial
 
@@ -82,7 +81,7 @@ class worker(QtCore.QThread):
 
             QtCore.QThread.sleep(1)
 
-            stoneImgLocation = pyautogui.locateOnScreen('./img/stone.png', confidence=0.9)
+            stoneImgLocation = pyautogui.locateOnScreen('./img/stone.png', confidence=0.95)
             if not stoneImgLocation:
                 self.emitLog.emit("錯誤: 定位失敗")
                 raise ValueError("Stone location not found")
@@ -336,6 +335,7 @@ class worker(QtCore.QThread):
 
         except Exception as e:
             print(e)
+            self.emitLog.emit(str(e))
             self.isError.emit()
 
 class Ui_Main(object):
