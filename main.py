@@ -10,6 +10,7 @@ from PyQt6 import QtCore, QtGui, QtWidgets
 from PIL import ImageGrab, Image
 from functools import partial
 
+import cv2
 import pyautogui
 import pytesseract
 import pygetwindow
