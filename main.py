@@ -336,7 +336,7 @@ class worker(QtCore.QThread):
 
         except Exception as e:
             print(e)
-            self.emitLog.emit(str(e))
+            # self.emitLog.emit(str(e))
             self.isError.emit()
 
 class Ui_Main(object):
