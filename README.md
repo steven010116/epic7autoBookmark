@@ -11,7 +11,7 @@ i. 版本：5.4.50.1009 64位元
 ii. 顯示：橫向、1920x1080、320DPI  
 iii. 圖形：效能、OpenGL  
 2. 第七史詩  
-i. 只勾高級設定
+i. 裝置詳細設定和遊戲詳細設定都不勾，可以只勾高級設定
 3. python3.9.10  
 4. tesseract  
 i. tesseract-ocr-w64 (https://github.com/UB-Mannheim/tesseract/wiki)  
