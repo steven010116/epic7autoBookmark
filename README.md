@@ -18,11 +18,13 @@ i. tesseract-ocr-w64 (https://github.com/UB-Mannheim/tesseract/wiki)
 5. config.json  
 i. tesseract_path填上方tesseract的安裝路徑(記得處理跳脫字元)  
 ii. bluestack_name填模擬器的名稱(視窗名稱)  
+iii. e7_language填e7裡的語系(繁中: zh-TW, 簡中: zh-CN, 英文: en-US)
   
 ## 二、使用方式
 先將bluestack和第七史詩的設定調整的如上方環境相同。  
 並安裝tesseract-w64，然後確認config.json裡的tesseract路徑是不是剛剛安裝的路徑。  
 模擬器名稱是bluestack多開管理器裡可以自行命名的那個名稱。  
+確認第七史詩語系是不是與config.json裡使用的相同(預設為繁中)。
   
 0. 綠色按鈕code > download zip 整包下載後解壓縮放在同一個資料夾下，路徑最好為英數避免有其他問題。
 1. 開啟遊戲，進到秘密商店後，畫面會長得像下面這樣，記得收起模擬器右側的擴展欄。  
