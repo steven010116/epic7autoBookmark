@@ -20,6 +20,7 @@ file = open('config.json', 'r', encoding='utf-8')
 config = json.load(file)
 tesseract_path = config['tesseract_path'] 
 bluestack_name = config['bluestack_name']
+e7_language = config['e7_language']
 
 ImageGrab.grab = partial(ImageGrab.grab, all_screens=True)
 pytesseract.pytesseract.tesseract_cmd =  tesseract_path
@@ -153,7 +154,7 @@ class worker(QtCore.QThread):
                         QtCore.QThread.sleep(1)
 
                         while True:
-                            buyButton = pyautogui.locateOnScreen('./img/buyButton.png', confidence=0.95)
+                            buyButton = pyautogui.locateOnScreen(f'./img/buyButton-{e7_language}.png', confidence=0.95)
                             if buyButton:
                                 pyautogui.click(pyautogui.center(buyButton))
 
@@ -172,7 +173,7 @@ class worker(QtCore.QThread):
                     else:
                         print("not find covenant!")
 
-                    QtCore.QThread.sleep(1)
+                    # QtCore.QThread.sleep(1)
 
                     mysticLocation = pyautogui.locateOnScreen('./img/mysticLocation.png', confidence=0.95)
                     if mysticLocation:
@@ -183,7 +184,7 @@ class worker(QtCore.QThread):
                         QtCore.QThread.sleep(1)
 
                         while True:
-                            buyButton = pyautogui.locateOnScreen('./img/buyButton.png', confidence=0.95)
+                            buyButton = pyautogui.locateOnScreen(f'./img/buyButton-{e7_language}.png', confidence=0.95)
                             if buyButton:
                                 pyautogui.click(pyautogui.center(buyButton))
 
@@ -206,13 +207,13 @@ class worker(QtCore.QThread):
                     QtCore.QThread.sleep(1)
 
                     if needRefresh:
-                        refreshButton = pyautogui.locateOnScreen('./img/refreshButton.png', confidence=0.95)
+                        refreshButton = pyautogui.locateOnScreen(f'./img/refreshButton-{e7_language}.png', confidence=0.95)
                         if refreshButton:
                             pyautogui.click(pyautogui.center(refreshButton))
 
                             QtCore.QThread.sleep(1)
 
-                            refreshYesButton = pyautogui.locateOnScreen('./img/refreshYesButton.png', confidence=0.95)
+                            refreshYesButton = pyautogui.locateOnScreen(f'./img/refreshYesButton-{e7_language}.png', confidence=0.95)
                             if refreshYesButton:
                                 pyautogui.click(pyautogui.center(refreshYesButton))
 
@@ -247,7 +248,7 @@ class worker(QtCore.QThread):
                         QtCore.QThread.sleep(1)
 
                         while True:
-                            buyButton = pyautogui.locateOnScreen('./img/buyButton.png', confidence=0.95)
+                            buyButton = pyautogui.locateOnScreen(f'./img/buyButton-{e7_language}.png', confidence=0.95)
                             if buyButton:
                                 pyautogui.click(pyautogui.center(buyButton))
                                 
@@ -262,7 +263,7 @@ class worker(QtCore.QThread):
                     else:
                         print("not find covenant!")
 
-                    QtCore.QThread.sleep(1)
+                    # QtCore.QThread.sleep(1)
 
                     mysticLocation = pyautogui.locateOnScreen('./img/mysticLocation.png', confidence=0.95)
                     if mysticLocation:
@@ -273,7 +274,7 @@ class worker(QtCore.QThread):
                         QtCore.QThread.sleep(1)
 
                         while True:
-                            buyButton = pyautogui.locateOnScreen('./img/buyButton.png', confidence=0.95)
+                            buyButton = pyautogui.locateOnScreen(f'./img/buyButton-{e7_language}.png', confidence=0.95)
                             if buyButton:
                                 pyautogui.click(pyautogui.center(buyButton))
 
@@ -292,13 +293,13 @@ class worker(QtCore.QThread):
                     QtCore.QThread.sleep(1)
 
                     if needRefresh:
-                        refreshButton = pyautogui.locateOnScreen('./img/refreshButton.png', confidence=0.95)
+                        refreshButton = pyautogui.locateOnScreen(f'./img/refreshButton-{e7_language}.png', confidence=0.95)
                         if refreshButton:
                             pyautogui.click(pyautogui.center(refreshButton))
 
                             QtCore.QThread.sleep(1)
 
-                            refreshYesButton = pyautogui.locateOnScreen('./img/refreshYesButton.png', confidence=0.95)
+                            refreshYesButton = pyautogui.locateOnScreen(f'./img/refreshYesButton-{e7_language}.png', confidence=0.95)
                             if refreshYesButton:
                                 pyautogui.click(pyautogui.center(refreshYesButton))
 

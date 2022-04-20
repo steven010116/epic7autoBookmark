@@ -1,4 +1,5 @@
 {
     "tesseract_path": "C:\\Program Files\\Tesseract-OCR\\tesseract.exe",
-    "bluestack_name": "64位元"
+    "bluestack_name": "64位元",
+    "e7_language": "zh-TW"
 }
