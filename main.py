@@ -99,7 +99,8 @@ class worker(QtCore.QThread):
 
             self.emitLog.emit("取得錢錢和天空石...")
 
-            moneyImg = pyautogui.screenshot(region=(stoneImgLocation.left-240, stoneImgLocation.top, stoneImgLocation.width+240, stoneImgLocation.height+5))
+            moneyImg = pyautogui.screenshot(region=(stoneImgLocation.left-255, stoneImgLocation.top-5, stoneImgLocation.width+240, stoneImgLocation.height+5))
+            #moneyImg.save("moneyscreenshot.png")
             res = pytesseract.image_to_string(moneyImg, lang='eng', \
                     config='--psm 13 --oem 3 -c tessedit_char_whitelist=0123456789').rstrip()
 
@@ -107,7 +108,8 @@ class worker(QtCore.QThread):
             self.emitMoney.emit(res)
             moneyNum = int(res)
 
-            stoneImg = pyautogui.screenshot(region=(stoneImgLocation.left, stoneImgLocation.top, stoneImgLocation.width+100, stoneImgLocation.height+5))
+            stoneImg = pyautogui.screenshot(region=(stoneImgLocation.left+15, stoneImgLocation.top-5, stoneImgLocation.width+100, stoneImgLocation.height+5))
+            #stoneImg.save("stonescreenshot.png")
             res = pytesseract.image_to_string(stoneImg, lang='eng', \
                     config='--psm 13 --oem 3 -c tessedit_char_whitelist=0123456789').rstrip()
 
