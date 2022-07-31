@@ -97,12 +97,22 @@ class worker(QtCore.QThread):
 
             QtCore.QThread.sleep(1)
 
+            threshold  = 210 
+            threshold_table  =  []
+            for  i  in  range( 256 ):
+                if  i  <  threshold:
+                    threshold_table.append(0)
+                else :
+                    threshold_table.append(1)
+
             self.emitLog.emit("取得錢錢和天空石...")
 
             moneyImg = pyautogui.screenshot(region=(stoneImgLocation.left-255, stoneImgLocation.top-5, stoneImgLocation.width+240, stoneImgLocation.height+5))
+            moneyImg = moneyImg.convert("L")
+            moneyImg = moneyImg.point(threshold_table, '1')
             #moneyImg.save("moneyscreenshot.png")
             res = pytesseract.image_to_string(moneyImg, lang='eng', \
-                    config='--psm 13 --oem 3 -c tessedit_char_whitelist=0123456789').rstrip()
+                    config='--psm 10 --oem 3 -c tessedit_char_whitelist=0123456789').rstrip()
 
             #self.emitLog.emit(f"錢錢: {res}")
             self.emitMoney.emit(res)
@@ -152,12 +162,12 @@ class worker(QtCore.QThread):
             if self.startMode != 3:
                 needRefresh = False
                 while self.expectNum > 0 and moneyNum > 280000 and stoneNum >= 3:
-                    covenantLocation = pyautogui.locateOnScreen('./img/covenantLocation.png', confidence=0.95)
+                    covenantLocation = pyautogui.locateOnScreen('./img/covenantLocation.png', confidence=0.90)
                     if covenantLocation:
                         print("find covenant!")
                         self.emitLog.emit("找到聖約書籤")
-                        pyautogui.click(pyautogui.center((covenantLocation.left+500, covenantLocation.top, 160, covenantLocation.height)), clicks=2, interval=0.05)
-
+                        pyautogui.click(pyautogui.center((covenantLocation.left+500, covenantLocation.top+40, 160, 40)), clicks=2, interval=0.05)
+                        
                         QtCore.QThread.sleep(1)
 
                         while True:
@@ -182,12 +192,12 @@ class worker(QtCore.QThread):
 
                     # QtCore.QThread.sleep(1)
 
-                    mysticLocation = pyautogui.locateOnScreen('./img/mysticLocation.png', confidence=0.95)
+                    mysticLocation = pyautogui.locateOnScreen('./img/mysticLocation.png', confidence=0.90)
                     if mysticLocation:
                         print("find mystic!")
                         self.emitLog.emit("找到神秘書籤")
-                        pyautogui.click(pyautogui.center((mysticLocation.left+500, mysticLocation.top, 160, mysticLocation.height)), clicks=2, interval=0.05)
-                        
+                        pyautogui.click(pyautogui.center((mysticLocation.left+500, mysticLocation.top+40, 160, 40)), clicks=2, interval=0.05)
+
                         QtCore.QThread.sleep(1)
 
                         while True:
@@ -246,11 +256,11 @@ class worker(QtCore.QThread):
             else:
                 needRefresh = False
                 while self.expectNum >= 3 and moneyNum > 280000 and stoneNum >= 3:
-                    covenantLocation = pyautogui.locateOnScreen('./img/covenantLocation.png', confidence=0.95)
+                    covenantLocation = pyautogui.locateOnScreen('./img/covenantLocation.png', confidence=0.90)
                     if covenantLocation:
                         print("find covenant!")
                         self.emitLog.emit("找到聖約書籤")
-                        pyautogui.click(pyautogui.center((covenantLocation.left+500, covenantLocation.top, 160, covenantLocation.height)), clicks=2, interval=0.05)
+                        pyautogui.click(pyautogui.center((covenantLocation.left+500, covenantLocation.top+40, 160, 40)), clicks=2, interval=0.05)
 
                         QtCore.QThread.sleep(1)
 
@@ -272,11 +282,11 @@ class worker(QtCore.QThread):
 
                     # QtCore.QThread.sleep(1)
 
-                    mysticLocation = pyautogui.locateOnScreen('./img/mysticLocation.png', confidence=0.95)
+                    mysticLocation = pyautogui.locateOnScreen('./img/mysticLocation.png', confidence=0.90)
                     if mysticLocation:
                         print("find mystic!")
                         self.emitLog.emit("找到神秘書籤")
-                        pyautogui.click(pyautogui.center((mysticLocation.left+500, mysticLocation.top, 160, mysticLocation.height)), clicks=2, interval=0.05)
+                        pyautogui.click(pyautogui.center((mysticLocation.left+500, mysticLocation.top+40, 160, 40)), clicks=2, interval=0.05)
                         
                         QtCore.QThread.sleep(1)
 
