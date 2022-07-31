@@ -97,7 +97,7 @@ class worker(QtCore.QThread):
 
             QtCore.QThread.sleep(1)
 
-            threshold  = 200 
+            threshold  = 235 
             threshold_table  =  []
             for  i  in  range( 256 ):
                 if  i  <  threshold:
@@ -112,7 +112,7 @@ class worker(QtCore.QThread):
             moneyImg = moneyImg.point(threshold_table, '1')
             #moneyImg.save("moneyscreenshot.png")
             res = pytesseract.image_to_string(moneyImg, lang='eng', \
-                    config='--psm 13 --oem 3 -c tessedit_char_whitelist=0123456789').rstrip()
+                    config='--psm 10 --oem 3 -c tessedit_char_whitelist=0123456789').rstrip()
 
             #self.emitLog.emit(f"錢錢: {res}")
             self.emitMoney.emit(res)
