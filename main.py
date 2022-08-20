@@ -7,6 +7,7 @@
 
 from PyQt6 import QtCore, QtGui, QtWidgets
 from PIL import ImageGrab, Image
+import PIL.ImageOps
 from functools import partial
 
 import cv2
@@ -97,7 +98,7 @@ class worker(QtCore.QThread):
 
             QtCore.QThread.sleep(1)
 
-            threshold  = 235 
+            threshold  = 220
             threshold_table  =  []
             for  i  in  range( 256 ):
                 if  i  <  threshold:
@@ -110,18 +111,20 @@ class worker(QtCore.QThread):
             moneyImg = pyautogui.screenshot(region=(stoneImgLocation.left-255, stoneImgLocation.top-5, stoneImgLocation.width+240, stoneImgLocation.height+5))
             moneyImg = moneyImg.convert("L")
             moneyImg = moneyImg.point(threshold_table, '1')
+            moneyImg = PIL.ImageOps.invert(moneyImg.convert('RGB'))
             #moneyImg.save("moneyscreenshot.png")
-            res = pytesseract.image_to_string(moneyImg, lang='eng', \
-                    config='--psm 10 --oem 3 -c tessedit_char_whitelist=0123456789').rstrip()
+            res = pytesseract.image_to_string(moneyImg, config='-c tessedit_char_whitelist=0123456789').rstrip()
 
             #self.emitLog.emit(f"錢錢: {res}")
             self.emitMoney.emit(res)
             moneyNum = int(res)
 
             stoneImg = pyautogui.screenshot(region=(stoneImgLocation.left+15, stoneImgLocation.top-5, stoneImgLocation.width+100, stoneImgLocation.height+5))
+            stoneImg = stoneImg.convert("L")
+            stoneImg = stoneImg.point(threshold_table, '1')
+            stoneImg = PIL.ImageOps.invert(stoneImg.convert('RGB'))
             #stoneImg.save("stonescreenshot.png")
-            res = pytesseract.image_to_string(stoneImg, lang='eng', \
-                    config='--psm 13 --oem 3 -c tessedit_char_whitelist=0123456789').rstrip()
+            res = pytesseract.image_to_string(stoneImg, config='-c tessedit_char_whitelist=0123456789').rstrip()
 
             #self.emitLog.emit(f"天空石: {res}")
             self.emitStone.emit(res)
