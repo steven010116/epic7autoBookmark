@@ -7,24 +7,19 @@
 
 from PyQt6 import QtCore, QtGui, QtWidgets
 from PIL import ImageGrab, Image
-import PIL.ImageOps
 from functools import partial
 
-import cv2
 import pyautogui
-import pytesseract
 import pygetwindow
 import json
 import random
 
 file = open('config.json', 'r', encoding='utf-8')
 config = json.load(file)
-tesseract_path = config['tesseract_path'] 
 bluestack_name = config['bluestack_name']
 e7_language = config['e7_language']
 
 ImageGrab.grab = partial(ImageGrab.grab, all_screens=True)
-pytesseract.pytesseract.tesseract_cmd =  tesseract_path
 
 def pointOffset(point):
     x = int(random.uniform(point.x-2, point.x+2))
@@ -34,6 +29,8 @@ def pointOffset(point):
 class worker(QtCore.QThread):
     startMode = 0
     expectNum = 0
+    moneyNum = 0
+    stoneNum = 0
 
     isStart = QtCore.pyqtSignal()
     isProgress = QtCore.pyqtSignal(str)
@@ -47,9 +44,11 @@ class worker(QtCore.QThread):
     def __init__(self):
         super().__init__()
 
-    def setVariable(self, startMode: int, expectNum: int):
+    def setVariable(self, startMode: int, expectNum: int, moneyNum: int, stoneNum: int):
         self.startMode = startMode
         self.expectNum = expectNum
+        self.moneyNum = moneyNum
+        self.stoneNum = stoneNum
 
     def run(self):
         self.isStart.emit()
@@ -98,54 +97,16 @@ class worker(QtCore.QThread):
 
             QtCore.QThread.sleep(1)
 
-            threshold  = 220
-            threshold_table  =  []
-            for  i  in  range( 256 ):
-                if  i  <  threshold:
-                    threshold_table.append(0)
-                else :
-                    threshold_table.append(1)
-
-            self.emitLog.emit("取得錢錢和天空石...")
-
-            moneyImg = pyautogui.screenshot(region=(stoneImgLocation.left-255, stoneImgLocation.top-5, stoneImgLocation.width+240, stoneImgLocation.height+5))
-            moneyImg = moneyImg.convert("L")
-            moneyImg = moneyImg.point(threshold_table, '1')
-            moneyImg = PIL.ImageOps.invert(moneyImg.convert('RGB'))
-            #moneyImg.save("moneyscreenshot.png")
-            res = pytesseract.image_to_string(moneyImg, config='-c tessedit_char_whitelist=0123456789').rstrip()
-
-            #self.emitLog.emit(f"錢錢: {res}")
-            self.emitMoney.emit(res)
-            moneyNum = int(res)
-
-            stoneImg = pyautogui.screenshot(region=(stoneImgLocation.left+15, stoneImgLocation.top-5, stoneImgLocation.width+100, stoneImgLocation.height+5))
-            stoneImg = stoneImg.convert("L")
-            stoneImg = stoneImg.point(threshold_table, '1')
-            stoneImg = PIL.ImageOps.invert(stoneImg.convert('RGB'))
-            #stoneImg.save("stonescreenshot.png")
-            res = pytesseract.image_to_string(stoneImg, config='-c tessedit_char_whitelist=0123456789').rstrip()
-
-            #self.emitLog.emit(f"天空石: {res}")
-            self.emitStone.emit(res)
-            stoneNum = int(res)
-            
-            QtCore.QThread.sleep(1)
-            
-            self.emitLog.emit("取得成功")
-
-            QtCore.QThread.sleep(1)
-
             # check input
-            if moneyNum < 280000:
+            if self.moneyNum < 280000:
                 self.emitLog.emit("錯誤: 金幣不足28萬")
                 raise ValueError("out of money")
 
-            if stoneNum < 3:
+            if self.stoneNum < 3:
                 self.emitLog.emit("錯誤: 天空石不足以刷新商店")
                 raise ValueError("out of stone")
             
-            if self.startMode == 3 and self.expectNum > stoneNum:
+            if self.startMode == 3 and self.expectNum > self.stoneNum:
                 self.emitLog.emit("錯誤: 天空石使用數量大於持有數量")
                 raise ValueError("stone input error")
 
@@ -167,7 +128,7 @@ class worker(QtCore.QThread):
                 covenantFound = False
                 mysticFound = False
 
-                while self.expectNum > 0 and moneyNum > 280000 and stoneNum >= 3:
+                while self.expectNum > 0 and self.moneyNum > 280000 and self.stoneNum >= 3:
                     covenantLocation = pyautogui.locateOnScreen('./img/covenantLocation.png', confidence=0.90)
                     if covenantLocation and (not covenantFound):
                         covenantFound = True
@@ -187,9 +148,9 @@ class worker(QtCore.QThread):
                                     self.expectNum -= 1
                                     self.emitLog.emit(f"剩餘次數: {self.expectNum}次")
                                 
-                                moneyNum = moneyNum - 184000
+                                self.moneyNum = self.moneyNum - 184000
                                 covenantFoundTime += 1
-                                self.emitMoney.emit(str(moneyNum))
+                                self.emitMoney.emit(str(self.moneyNum))
 
                                 break
                             QtCore.QThread.sleep(1)
@@ -219,9 +180,9 @@ class worker(QtCore.QThread):
                                     self.expectNum -= 1
                                     self.emitLog.emit(f"剩餘次數: {self.expectNum}次")
 
-                                moneyNum = moneyNum - 280000
+                                self.moneyNum = self.moneyNum - 280000
                                 mysticFoundTime += 1
-                                self.emitMoney.emit(str(moneyNum))
+                                self.emitMoney.emit(str(self.moneyNum))
 
                                 break
                             QtCore.QThread.sleep(1)
@@ -244,8 +205,8 @@ class worker(QtCore.QThread):
                             if refreshYesButton:
                                 pyautogui.click(pointOffset(pyautogui.center(refreshYesButton)), clicks=2, interval=0.05)
 
-                                stoneNum = stoneNum - 3
-                                self.emitStone.emit(str(stoneNum))
+                                self.stoneNum = self.stoneNum - 3
+                                self.emitStone.emit(str(self.stoneNum))
                                 
                                 refreshTime += 1
 
@@ -269,7 +230,7 @@ class worker(QtCore.QThread):
                 needRefresh = False
                 covenantFound = False
                 mysticFound = False
-                while self.expectNum >= 3 and moneyNum > 280000 and stoneNum >= 3:
+                while self.expectNum >= 3 and self.moneyNum > 280000 and self.stoneNum >= 3:
                     covenantLocation = pyautogui.locateOnScreen('./img/covenantLocation.png', confidence=0.90)
                     if covenantLocation and (not covenantFound):
                         covenantFound = True
@@ -285,9 +246,9 @@ class worker(QtCore.QThread):
                             if buyButton:
                                 pyautogui.click(pointOffset(pyautogui.center(buyButton)), clicks=2, interval=0.05)
                                 
-                                moneyNum = moneyNum - 184000
+                                self.moneyNum = self.moneyNum - 184000
                                 covenantFoundTime += 1
-                                self.emitMoney.emit(str(moneyNum))
+                                self.emitMoney.emit(str(self.moneyNum))
 
                                 break
                             QtCore.QThread.sleep(1)
@@ -313,9 +274,9 @@ class worker(QtCore.QThread):
                             if buyButton:
                                 pyautogui.click(pointOffset(pyautogui.center(buyButton)), clicks=2, interval=0.05)
 
-                                moneyNum = moneyNum - 280000
+                                self.moneyNum = self.moneyNum - 280000
                                 mysticFoundTime += 1
-                                self.emitMoney.emit(str(moneyNum))
+                                self.emitMoney.emit(str(self.moneyNum))
 
                                 break
                             QtCore.QThread.sleep(1)
@@ -338,8 +299,8 @@ class worker(QtCore.QThread):
                             if refreshYesButton:
                                 pyautogui.click(pointOffset(pyautogui.center(refreshYesButton)), clicks=2, interval=0.05)
 
-                                stoneNum = stoneNum - 3
-                                self.emitStone.emit(str(stoneNum))
+                                self.stoneNum = self.stoneNum - 3
+                                self.emitStone.emit(str(self.stoneNum))
                                 
                                 refreshTime += 1
 
@@ -432,14 +393,15 @@ class Ui_Main(object):
         font.setPointSize(12)
         self.moneyTextShowLabel.setFont(font)
         self.moneyTextShowLabel.setObjectName("moneyTextShowLabel")
-        self.moneyTotalShowLabel = QtWidgets.QLabel(self.functionTab)
-        self.moneyTotalShowLabel.setGeometry(QtCore.QRect(140, 10, 90, 20))
+        self.moneyTotalShowEdit = QtWidgets.QLineEdit(self.functionTab)
+        self.moneyTotalShowEdit.setGeometry(QtCore.QRect(120, 10, 111, 20))
         font = QtGui.QFont()
         font.setFamily("微軟正黑體")
         font.setPointSize(12)
-        self.moneyTotalShowLabel.setFont(font)
-        self.moneyTotalShowLabel.setAlignment(QtCore.Qt.AlignmentFlag.AlignRight|QtCore.Qt.AlignmentFlag.AlignTrailing|QtCore.Qt.AlignmentFlag.AlignVCenter)
-        self.moneyTotalShowLabel.setObjectName("moneyTotalShowLabel")
+        self.moneyTotalShowEdit.setFont(font)
+        self.moneyTotalShowEdit.setLayoutDirection(QtCore.Qt.LayoutDirection.RightToLeft)
+        self.moneyTotalShowEdit.setAlignment(QtCore.Qt.AlignmentFlag.AlignRight|QtCore.Qt.AlignmentFlag.AlignTrailing|QtCore.Qt.AlignmentFlag.AlignVCenter)
+        self.moneyTotalShowEdit.setObjectName("moneyTotalShowEdit")
         self.divider = QtWidgets.QFrame(self.functionTab)
         self.divider.setGeometry(QtCore.QRect(10, 60, 271, 20))
         self.divider.setFrameShape(QtWidgets.QFrame.Shape.HLine)
@@ -452,14 +414,15 @@ class Ui_Main(object):
         font.setPointSize(12)
         self.stoneTextShowLabel.setFont(font)
         self.stoneTextShowLabel.setObjectName("stoneTextShowLabel")
-        self.stoneTotalShowLabel = QtWidgets.QLabel(self.functionTab)
-        self.stoneTotalShowLabel.setGeometry(QtCore.QRect(140, 40, 90, 20))
+        self.stoneTotalShowEdit = QtWidgets.QLineEdit(self.functionTab)
+        self.stoneTotalShowEdit.setGeometry(QtCore.QRect(119, 40, 111, 20))
         font = QtGui.QFont()
         font.setFamily("微軟正黑體")
         font.setPointSize(12)
-        self.stoneTotalShowLabel.setFont(font)
-        self.stoneTotalShowLabel.setAlignment(QtCore.Qt.AlignmentFlag.AlignRight|QtCore.Qt.AlignmentFlag.AlignTrailing|QtCore.Qt.AlignmentFlag.AlignVCenter)
-        self.stoneTotalShowLabel.setObjectName("stoneTotalShowLabel")
+        self.stoneTotalShowEdit.setFont(font)
+        self.stoneTotalShowEdit.setLayoutDirection(QtCore.Qt.LayoutDirection.RightToLeft)
+        self.stoneTotalShowEdit.setAlignment(QtCore.Qt.AlignmentFlag.AlignRight|QtCore.Qt.AlignmentFlag.AlignTrailing|QtCore.Qt.AlignmentFlag.AlignVCenter)
+        self.stoneTotalShowEdit.setObjectName("stoneTotalShowEdit")
         self.startButton = QtWidgets.QPushButton(self.functionTab)
         self.startButton.setGeometry(QtCore.QRect(140, 360, 100, 40))
         font = QtGui.QFont()
@@ -542,8 +505,8 @@ class Ui_Main(object):
         self.worker.isError.connect(self.errorWorker)
 
         self.worker.emitLog.connect(lambda text: self.logTextBrowser.append(text))
-        self.worker.emitMoney.connect(lambda text: self.moneyTotalShowLabel.setText(text))
-        self.worker.emitStone.connect(lambda text: self.stoneTotalShowLabel.setText(text))
+        self.worker.emitMoney.connect(lambda text: self.moneyTotalShowEdit.setText(text))
+        self.worker.emitStone.connect(lambda text: self.stoneTotalShowEdit.setText(text))
 
         self.retranslateUi(Main)
         self.tabWidget.setCurrentIndex(0)
@@ -555,9 +518,9 @@ class Ui_Main(object):
         self.covenantInput.setText(_translate("Main", "0"))
         self.mysticInput.setText(_translate("Main", "0"))
         self.moneyTextShowLabel.setText(_translate("Main", "金幣"))
-        self.moneyTotalShowLabel.setText(_translate("Main", "0"))
+        self.moneyTotalShowEdit.setText(_translate("Main", "0"))
         self.stoneTextShowLabel.setText(_translate("Main", "天空石"))
-        self.stoneTotalShowLabel.setText(_translate("Main", "0"))
+        self.stoneTotalShowEdit.setText(_translate("Main", "0"))
         self.startButton.setText(_translate("Main", "開始"))
         self.covenantTimeLabel.setText(_translate("Main", "次"))
         self.mysticTimeLabel.setText(_translate("Main", "次"))
@@ -595,6 +558,17 @@ class Ui_Main(object):
         if(self.start):
             startMode = 0
             expectNum = 0
+            moneyNum = int(self.moneyTotalShowEdit.text()) if self.moneyTotalShowEdit.text().isdigit() else 0
+            stoneNum = int(self.stoneTotalShowEdit.text()) if self.stoneTotalShowEdit.text().isdigit() else 0
+
+            if moneyNum == 0 or stoneNum == 0:
+                self.logTextBrowser.setText("")
+                self.logTextBrowser.append("石頭或金幣輸入錯誤")
+                self.logTextBrowser.append("===== 停止 =====")
+                self.start = not self.start
+                self.startProperty(False)
+                return
+
             if self.covenantRadioButton.isChecked():
                 startMode = 1
                 covenant = self.covenantInput.text()
@@ -618,10 +592,11 @@ class Ui_Main(object):
                 self.logTextBrowser.append("明明就預設會選一個,")
                 self.logTextBrowser.append("你是怎麼取消掉的? 能不能教我?")
                 self.logTextBrowser.append("===== 停止 =====")
+                self.start = not self.start
                 self.startProperty(False)
                 return
 
-            self.worker.setVariable(startMode, expectNum)
+            self.worker.setVariable(startMode, expectNum, moneyNum, stoneNum)
             self.worker.start()
         else:
             self.worker.terminate()
@@ -637,14 +612,14 @@ class Ui_Main(object):
         self.covenantRadioButton.setDisabled(isDisabled)
         self.mysticRadioButton.setDisabled(isDisabled)
         self.stoneRadioButton.setDisabled(isDisabled)
+        self.moneyTotalShowEdit.setDisabled(isDisabled)
+        self.stoneTotalShowEdit.setDisabled(isDisabled)
         self.covenantInput.setDisabled(isDisabled)
         self.mysticInput.setDisabled(isDisabled)
         self.stoneInput.setDisabled(isDisabled)
 
     def startWorker(self):
         self.logTextBrowser.setText("")
-        self.moneyTotalShowLabel.setText("0")
-        self.stoneTotalShowLabel.setText("0")
         self.startProperty(True)
 
     def errorWorker(self):
