@@ -62,7 +62,7 @@
     <string notr="true"/>
    </property>
    <property name="currentIndex">
-    <number>1</number>
+    <number>0</number>
    </property>
    <widget class="QWidget" name="functionTab">
     <property name="minimumSize">
@@ -155,28 +155,6 @@
       <string>金幣</string>
      </property>
     </widget>
-    <widget class="QLabel" name="moneyTotalShowLabel">
-     <property name="geometry">
-      <rect>
-       <x>140</x>
-       <y>10</y>
-       <width>90</width>
-       <height>20</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <family>微軟正黑體</family>
-       <pointsize>12</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>0</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-     </property>
-    </widget>
     <widget class="Line" name="divider">
      <property name="geometry">
       <rect>
@@ -207,28 +185,6 @@
      </property>
      <property name="text">
       <string>天空石</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="stoneTotalShowLabel">
-     <property name="geometry">
-      <rect>
-       <x>140</x>
-       <y>40</y>
-       <width>90</width>
-       <height>20</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <family>微軟正黑體</family>
-       <pointsize>12</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>0</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
      </property>
     </widget>
     <widget class="QPushButton" name="startButton">
@@ -385,6 +341,56 @@ p, li { white-space: pre-wrap; }
      </property>
      <property name="text">
       <string>天空石</string>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="moneyTotalShowEdit">
+     <property name="geometry">
+      <rect>
+       <x>120</x>
+       <y>10</y>
+       <width>111</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>微軟正黑體</family>
+       <pointsize>12</pointsize>
+      </font>
+     </property>
+     <property name="layoutDirection">
+      <enum>Qt::RightToLeft</enum>
+     </property>
+     <property name="text">
+      <string>0</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="stoneTotalShowEdit">
+     <property name="geometry">
+      <rect>
+       <x>119</x>
+       <y>40</y>
+       <width>111</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>微軟正黑體</family>
+       <pointsize>12</pointsize>
+      </font>
+     </property>
+     <property name="layoutDirection">
+      <enum>Qt::RightToLeft</enum>
+     </property>
+     <property name="text">
+      <string>0</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
      </property>
     </widget>
    </widget>

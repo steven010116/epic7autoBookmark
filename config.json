@@ -1,4 +1,4 @@
 {
-    "bluestack_name": "64位元",
+    "adb_addr": "127.0.0.1:5555",
     "e7_language": "zh-TW"
 }
