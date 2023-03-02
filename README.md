@@ -14,13 +14,19 @@ i. 裝置詳細設定和遊戲詳細設定最好都不勾，如果覺得畫面�
 ii. 推薦：只勾高級設定  
 3. python3.9.10  
 4. config.json  
+![預覽](https://i.imgur.com/2sAobaw.png)  
 i. adb_addr填adb路徑  
 ii. e7_language填e7裡的語系(繁中: zh-TW, 簡中: zh-CN, 英文: en-US)
   
 ## 二、使用方式
+
+
 先將bluestack和第七史詩的設定調整的如上方環境相同。  
 adb功能在設定=>進階=>Android調試橋(ADB)，勾選後會看到路徑。  
 英文路徑在settings=>Advanced=>Android Debug Bridge(ADB)。  
+
+![預覽](https://i.imgur.com/eSamCR3.png)  
+
 確認第七史詩語系是不是與config.json裡使用的相同(預設為繁中)。
   
 0. 綠色按鈕code > download zip 整包下載後解壓縮放在同一個資料夾下，路徑最好為英數避免有其他問題。
