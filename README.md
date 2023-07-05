@@ -4,6 +4,8 @@
   
 ![預覽](https://i.imgur.com/eMp5tMV.png)
 
+目前這個版本不支援國服，如果有國服的使用需求可以參考這位大佬維護的專案 [epic7auto](https://github.com/Wrong-pixel/epic7auto)
+
 ## 一、環境
 0. windows10 
 1. Bluestack  
@@ -37,4 +39,4 @@ adb功能在設定=>進階=>Android調試橋(ADB)，勾選後會看到路徑。
 
 3. 打開小工具(main.exe)，選擇條件並輸入目標次數，按下開始應該就會自己動惹。  
 4. 之前的版本用圖像辨識，而這個版本走的是android adb，已經不會搶滑鼠了，甚至可以縮小放著。  
-5. .exe是用pyinstaller包的，有安全疑慮的話可以用資料夾內的main.spec自己打包。  
+5. .exe是用pyinstaller包的，有安全疑慮的話可以自己打包 `pyinstaller -F -w -i main.ico main.py`。  
