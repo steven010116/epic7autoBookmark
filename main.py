@@ -54,6 +54,44 @@ class worker(QtCore.QThread):
         self.moneyNum = moneyNum
         self.stoneNum = stoneNum
 
+    def processDispatchMissionComplete(self, device, restartDispatchButton):
+        screenshot = asarray(device.screenshot())
+        condifence = 0.75
+        restartDispatchButtonLocation = aircv.find_template(screenshot, restartDispatchButton, condifence)
+        print("dispatch")
+        print(restartDispatchButtonLocation)
+        if restartDispatchButtonLocation:
+            print("dispatch mission completed!")
+            self.emitLog.emit("重新進行派遣任務")
+            
+            while True:
+                restartDispatchFoundResult: tuple = restartDispatchButtonLocation["result"]
+                doubleClick(
+                    device,
+                    restartDispatchFoundResult[0],
+                    restartDispatchFoundResult[1],
+                )
+                
+                QtCore.QThread.sleep(1)
+
+                doubleClick(
+                    device,
+                    restartDispatchFoundResult[0],
+                    restartDispatchFoundResult[1],
+                )
+                
+                QtCore.QThread.sleep(1)
+
+                after_restartDispatch_screenshot = asarray(device.screenshot())
+                restartDispatchButtonLocationAfter = aircv.find_template(
+                    after_restartDispatch_screenshot, restartDispatchButton, condifence
+                )
+                
+                if not restartDispatchButtonLocationAfter:
+                    break
+                
+            QtCore.QThread.sleep(1)
+
     def run(self):
         self.isStart.emit()
 
@@ -107,7 +145,8 @@ class worker(QtCore.QThread):
             buyButton = aircv.imread(f"./img/buyButton-{e7_language}.png")
             refreshButton = aircv.imread(f"./img/refreshButton-{e7_language}.png")
             refreshYesButton = aircv.imread(f"./img/refreshYesButton-{e7_language}.png")
-
+            restartDispatchButton = aircv.imread(f"./img/restartDispatchButton-{e7_language}.png")
+            
             needRefresh = False
             covenantFound = False
             mysticFound = False
@@ -131,6 +170,8 @@ class worker(QtCore.QThread):
                         )
 
                         QtCore.QThread.sleep(1)
+                        
+                        self.processDispatchMissionComplete(device, restartDispatchButton)
 
                         buy_screenshot = asarray(device.screenshot())
                         buyButtonLocation = aircv.find_template(
@@ -148,6 +189,8 @@ class worker(QtCore.QThread):
                                 )
 
                                 QtCore.QThread.sleep(1)
+                                
+                                self.processDispatchMissionComplete(device, restartDispatchButton)
 
                                 after_buy_screenshot = asarray(device.screenshot())
                                 buyButtonLocationAfter = aircv.find_template(
@@ -190,6 +233,8 @@ class worker(QtCore.QThread):
                         )
 
                         QtCore.QThread.sleep(1)
+                        
+                        self.processDispatchMissionComplete(device, restartDispatchButton)
 
                         buy_screenshot = asarray(device.screenshot())
                         buyButtonLocation = aircv.find_template(
@@ -207,6 +252,8 @@ class worker(QtCore.QThread):
                                 )
 
                                 QtCore.QThread.sleep(1)
+                                
+                                self.processDispatchMissionComplete(device, restartDispatchButton)
 
                                 after_buy_screenshot = asarray(device.screenshot())
                                 buyButtonLocationAfter = aircv.find_template(
@@ -232,7 +279,7 @@ class worker(QtCore.QThread):
 
                 else:
                     print("not find mystic!")
-
+                    
                 if needRefresh:
                     refreshButtonLocation = aircv.find_template(
                         screenshot, refreshButton, 0.9
@@ -248,6 +295,8 @@ class worker(QtCore.QThread):
                         )
 
                         QtCore.QThread.sleep(1)
+
+                        self.processDispatchMissionComplete(device, restartDispatchButton)
 
                         confirm_screenshot = asarray(device.screenshot())
                         refreshYesButtonLocation = aircv.find_template(
@@ -267,6 +316,8 @@ class worker(QtCore.QThread):
                                 )
 
                                 QtCore.QThread.sleep(1)
+
+                                self.processDispatchMissionComplete(device, restartDispatchButton)
 
                                 after_click_yes_screenshot = asarray(
                                     device.screenshot()
@@ -304,6 +355,7 @@ class worker(QtCore.QThread):
                     needRefresh = True
 
                     QtCore.QThread.sleep(1)
+                    self.processDispatchMissionComplete(device, restartDispatchButton)
 
             # finished report
             self.emitLog.emit("===== 結算 =====")
