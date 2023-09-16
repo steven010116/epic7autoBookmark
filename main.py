@@ -48,13 +48,17 @@ class worker(QtCore.QThread):
     def __init__(self):
         super().__init__()
 
-    def setVariable(self, startMode: int, expectNum: int, moneyNum: int, stoneNum: int):
+    def setVariable(self, startMode: int, expectNum: int, moneyNum: int, stoneNum: int, autoRestartDispatch: bool):
         self.startMode = startMode
         self.expectNum = expectNum
         self.moneyNum = moneyNum
         self.stoneNum = stoneNum
+        self.autoRestartDispatch = autoRestartDispatch
 
     def processDispatchMissionComplete(self, device, restartDispatchButton):
+        if not self.autoRestartDispatch:
+            return
+        
         screenshot = asarray(device.screenshot())
         condifence = 0.75
         restartDispatchButtonLocation = aircv.find_template(screenshot, restartDispatchButton, condifence)
@@ -380,16 +384,16 @@ class Ui_Main(object):
     def setupUi(self, Main):
         Main.setObjectName("Main")
         Main.resize(310, 460)
-        Main.setMinimumSize(QtCore.QSize(310, 460))
-        Main.setMaximumSize(QtCore.QSize(310, 460))
+        Main.setMinimumSize(QtCore.QSize(310, 500))
+        Main.setMaximumSize(QtCore.QSize(310, 500))
         font = QtGui.QFont()
         font.setFamily("微軟正黑體")
         font.setPointSize(12)
         Main.setFont(font)
         self.tabWidget = QtWidgets.QTabWidget(Main)
-        self.tabWidget.setGeometry(QtCore.QRect(5, 5, 300, 450))
-        self.tabWidget.setMinimumSize(QtCore.QSize(300, 450))
-        self.tabWidget.setMaximumSize(QtCore.QSize(300, 450))
+        self.tabWidget.setGeometry(QtCore.QRect(5, 5, 300, 490))
+        self.tabWidget.setMinimumSize(QtCore.QSize(300, 490))
+        self.tabWidget.setMaximumSize(QtCore.QSize(300, 490))
         font = QtGui.QFont()
         font.setFamily("微軟正黑體")
         font.setPointSize(12)
@@ -397,15 +401,15 @@ class Ui_Main(object):
         self.tabWidget.setStyleSheet("")
         self.tabWidget.setObjectName("tabWidget")
         self.functionTab = QtWidgets.QWidget()
-        self.functionTab.setMinimumSize(QtCore.QSize(300, 450))
-        self.functionTab.setMaximumSize(QtCore.QSize(300, 450))
+        self.functionTab.setMinimumSize(QtCore.QSize(300, 490))
+        self.functionTab.setMaximumSize(QtCore.QSize(300, 490))
         font = QtGui.QFont()
         font.setFamily("微軟正黑體")
         font.setPointSize(12)
         self.functionTab.setFont(font)
         self.functionTab.setObjectName("functionTab")
         self.covenantInput = QtWidgets.QLineEdit(self.functionTab)
-        self.covenantInput.setGeometry(QtCore.QRect(140, 90, 70, 20))
+        self.covenantInput.setGeometry(QtCore.QRect(140, 130, 70, 20))
         font = QtGui.QFont()
         font.setFamily("微軟正黑體")
         font.setPointSize(12)
@@ -418,7 +422,7 @@ class Ui_Main(object):
         )
         self.covenantInput.setObjectName("covenantInput")
         self.mysticInput = QtWidgets.QLineEdit(self.functionTab)
-        self.mysticInput.setGeometry(QtCore.QRect(140, 130, 70, 20))
+        self.mysticInput.setGeometry(QtCore.QRect(140, 170, 70, 20))
         font = QtGui.QFont()
         font.setFamily("微軟正黑體")
         font.setPointSize(12)
@@ -480,7 +484,7 @@ class Ui_Main(object):
         )
         self.stoneTotalShowEdit.setObjectName("stoneTotalShowEdit")
         self.startButton = QtWidgets.QPushButton(self.functionTab)
-        self.startButton.setGeometry(QtCore.QRect(140, 360, 100, 40))
+        self.startButton.setGeometry(QtCore.QRect(140, 400, 100, 40))
         font = QtGui.QFont()
         font.setFamily("微軟正黑體")
         font.setPointSize(12)
@@ -491,22 +495,22 @@ class Ui_Main(object):
         self.startButton.setObjectName("startButton")
         self.startButton.clicked.connect(self.startPressEvent)
         self.covenantTimeLabel = QtWidgets.QLabel(self.functionTab)
-        self.covenantTimeLabel.setGeometry(QtCore.QRect(220, 90, 20, 20))
+        self.covenantTimeLabel.setGeometry(QtCore.QRect(220, 130, 20, 20))
         self.covenantTimeLabel.setObjectName("covenantTimeLabel")
         self.mysticTimeLabel = QtWidgets.QLabel(self.functionTab)
-        self.mysticTimeLabel.setGeometry(QtCore.QRect(220, 130, 20, 20))
+        self.mysticTimeLabel.setGeometry(QtCore.QRect(220, 170, 20, 20))
         self.mysticTimeLabel.setObjectName("mysticTimeLabel")
         self.logTextBrowser = QtWidgets.QTextBrowser(self.functionTab)
-        self.logTextBrowser.setGeometry(QtCore.QRect(40, 210, 200, 131))
+        self.logTextBrowser.setGeometry(QtCore.QRect(40, 250, 200, 131))
         font = QtGui.QFont()
         font.setPointSize(10)
         self.logTextBrowser.setFont(font)
         self.logTextBrowser.setObjectName("logTextBrowser")
         self.stoneTimeLabel = QtWidgets.QLabel(self.functionTab)
-        self.stoneTimeLabel.setGeometry(QtCore.QRect(220, 170, 20, 20))
+        self.stoneTimeLabel.setGeometry(QtCore.QRect(220, 210, 20, 20))
         self.stoneTimeLabel.setObjectName("stoneTimeLabel")
         self.stoneInput = QtWidgets.QLineEdit(self.functionTab)
-        self.stoneInput.setGeometry(QtCore.QRect(140, 170, 70, 20))
+        self.stoneInput.setGeometry(QtCore.QRect(140, 210, 70, 20))
         font = QtGui.QFont()
         font.setFamily("微軟正黑體")
         font.setPointSize(12)
@@ -518,15 +522,19 @@ class Ui_Main(object):
             | QtCore.Qt.AlignmentFlag.AlignVCenter
         )
         self.stoneInput.setObjectName("stoneInput")
+        self.autoRestartDispatchCheckbox = QtWidgets.QCheckBox(self.functionTab)
+        self.autoRestartDispatchCheckbox.setGeometry(QtCore.QRect(40, 90, 150, 21))
+        self.autoRestartDispatchCheckbox.setObjectName("autoRestartDispatchCheckbox")
+        self.autoRestartDispatchCheckbox.setChecked(False)
         self.covenantRadioButton = QtWidgets.QRadioButton(self.functionTab)
-        self.covenantRadioButton.setGeometry(QtCore.QRect(40, 90, 91, 21))
+        self.covenantRadioButton.setGeometry(QtCore.QRect(40, 130, 91, 21))
         self.covenantRadioButton.setChecked(True)
         self.covenantRadioButton.setObjectName("covenantRadioButton")
         self.mysticRadioButton = QtWidgets.QRadioButton(self.functionTab)
-        self.mysticRadioButton.setGeometry(QtCore.QRect(40, 130, 91, 21))
+        self.mysticRadioButton.setGeometry(QtCore.QRect(40, 170, 91, 21))
         self.mysticRadioButton.setObjectName("mysticRadioButton")
         self.stoneRadioButton = QtWidgets.QRadioButton(self.functionTab)
-        self.stoneRadioButton.setGeometry(QtCore.QRect(40, 170, 91, 21))
+        self.stoneRadioButton.setGeometry(QtCore.QRect(40, 210, 91, 21))
         self.stoneRadioButton.setObjectName("stoneRadioButton")
         self.tabWidget.addTab(self.functionTab, "")
         self.introductionTab = QtWidgets.QWidget()
@@ -600,6 +608,7 @@ class Ui_Main(object):
         )
         self.stoneTimeLabel.setText(_translate("Main", "個"))
         self.stoneInput.setText(_translate("Main", "0"))
+        self.autoRestartDispatchCheckbox.setText(_translate("Main", "自動重新派遣"))
         self.covenantRadioButton.setText(_translate("Main", "聖約書籤"))
         self.mysticRadioButton.setText(_translate("Main", "神秘書籤"))
         self.stoneRadioButton.setText(_translate("Main", "天空石"))
@@ -650,6 +659,7 @@ class Ui_Main(object):
                 if self.stoneTotalShowEdit.text().isdigit()
                 else 0
             )
+            autoRestartDispatch = self.autoRestartDispatchCheckbox.isChecked()
 
             if moneyNum == 0 or stoneNum == 0:
                 self.logTextBrowser.setText("")
@@ -686,7 +696,7 @@ class Ui_Main(object):
                 self.startProperty(False)
                 return
 
-            self.worker.setVariable(startMode, expectNum, moneyNum, stoneNum)
+            self.worker.setVariable(startMode, expectNum, moneyNum, stoneNum, autoRestartDispatch)
             self.worker.start()
         else:
             self.worker.terminate()
@@ -707,6 +717,7 @@ class Ui_Main(object):
         self.covenantInput.setDisabled(isDisabled)
         self.mysticInput.setDisabled(isDisabled)
         self.stoneInput.setDisabled(isDisabled)
+        self.autoRestartDispatchCheckbox.setDisabled(isDisabled)
 
     def startWorker(self):
         self.logTextBrowser.setText("")
