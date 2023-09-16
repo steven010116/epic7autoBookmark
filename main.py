@@ -62,8 +62,7 @@ class worker(QtCore.QThread):
         screenshot = asarray(device.screenshot())
         condifence = 0.75
         restartDispatchButtonLocation = aircv.find_template(screenshot, restartDispatchButton, condifence)
-        print("dispatch")
-        print(restartDispatchButtonLocation)
+        
         if restartDispatchButtonLocation:
             print("dispatch mission completed!")
             self.emitLog.emit("重新進行派遣任務")
