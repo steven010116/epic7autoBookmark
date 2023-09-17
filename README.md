@@ -2,7 +2,7 @@
 
 第七史詩刷商店的小工具  
   
-![預覽](https://i.imgur.com/eMp5tMV.png)
+![image](https://github.com/steven010116/epic7autoBookmark/assets/24381832/526e78b9-df97-4500-9758-55f514eed883)
 
 目前這個版本不支援國服，如果有國服的使用需求可以參考這位大佬維護的專案 [epic7auto](https://github.com/Wrong-pixel/epic7auto)
 
@@ -21,8 +21,6 @@ i. adb_addr填adb路徑
 ii. e7_language填e7裡的語系(繁中: zh-TW, 簡中: zh-CN, 英文: en-US)
   
 ## 二、使用方式
-
-
 先將bluestack和第七史詩的設定調整的如上方環境相同。  
 adb功能在設定=>進階=>Android調試橋(ADB)，勾選後會看到路徑。  
 英文路徑在settings=>Advanced=>Android Debug Bridge(ADB)。  
@@ -39,4 +37,7 @@ adb功能在設定=>進階=>Android調試橋(ADB)，勾選後會看到路徑。
 
 3. 打開小工具(main.exe)，選擇條件並輸入目標次數，按下開始應該就會自己動惹。  
 4. 之前的版本用圖像辨識，而這個版本走的是android adb，已經不會搶滑鼠了，甚至可以縮小放著。  
-5. .exe是用pyinstaller包的，有安全疑慮的話可以自己打包 `pyinstaller -F -w -i main.ico main.py`。  
+5. .exe是用pyinstaller包的，有安全疑慮的話可以自己打包 `pyinstaller -F -w -i main.ico main.py`。
+
+## 三、特別感謝
+Raven9527 - 自動點擊派遣功能
